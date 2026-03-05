@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Relay calculations for transformer ratings and protection settings">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifeset" href="manifest.json">
+    <script>
+        if("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("sw.js")
+            .then(() => console.log("Service Worker registerd"));
+        }
+    </script>
+    <title>Relay Calculations - Transformer Protection</title>
+</head>
+<body>
+    <main class="container">
+        <h1>Relay Calculations Dashboard</h1>
+        <form id="relayCalculationForm">
+            <section class="form-section" aria-labelledby="transformer-section">
+                <h2 id="transformer-section">Transformer Ratings</h2>
+
+                <label for="vector_group">Vector Group:</label>
+                <select id="vector_group">
+                    <option value="" selected disabled>-- Select Vector Group --</option>
+                    <option value="Yy0">Yy0</option>
+                    <option value="Yd1">Yd1</option>
+                    <option value="Dd2">Dd2</option>
+                    <option value="Dd4">Dd4</option>
+                    <option value="Yd5">Yd5</option>
+                    <option value="Yy6">Yy6</option>
+                    <option value="Yd7">Yd7</option>
+                    <option value="Dd8">Dd8</option>
+                    <option value="Dd10">Dd10</option>
+                    <option value="Yd11">Yd11</option>
+                    <option value="Dd0">Dd0</option>
+                    <option value="Dy1">Dy1</option>
+                    <option value="Dz2">Dz2</option>
+                    <option value="Dz4">Dz4</option>
+                    <option value="Dy5">Dy5</option>
+                    <option value="Dd6">Dd6</option>
+                    <option value="Dy7">Dy7</option>
+                    <option value="Dz8">Dz8</option>
+                    <option value="Dz10">Dz10</option>
+                    <option value="Dy11">Dy11</option>
+                </select>
+
+                <label for="VHV">VHV :</label>
+                <input type="number" id="VHV" placeholder="Enter HV Voltage" />
+
+                <label for="VLV">VLV :</label>
+                <input type="number" id="VLV" placeholder="Enter LV Voltage" />
+
+                <label for="Range">Range :</label>
+                <select name="" id="Range">
+                    <option value="" selected disabled>-- Select Range --</option>
+                    <option value="MVA">MVA</option>
+                    <option value="KVA">KVA</option>
+                </select>
+    
+                <label for="Tarfo_Rating">Tarfo Rating :</label>
+                <input type="number" id="Tarfo_Rating" placeholder="Enter Tarfo Rating" />
+            </section>
+
+            <section class="form-section" aria-labelledby="differential-section">
+                <h2 id="differential-section">Differential Values</h2>
+                <label for="IS1">IS1 :</label>
+                <input type="number" id="IS1" placeholder="Enter IS1 value">
+
+                <label for="IS2">IS2 :</label>  
+                <input type="number" id="IS2" placeholder="Enter IS2 value">
+
+                <label for="K1">K1 :</label>
+                <input type="number" id="K1" placeholder="Enter K1 value">
+
+                <label for="K2">K2 :</label>
+                <input type="number" id="K2" placeholder="Enter K2 value">
+
+                <label for="IS_HS1">IS_HS1 :</label>
+                <input type="number" id="IS_HS1" placeholder="Enter IS_HS1 value">
+
+                <label for="IS_HS2">IS_HS2 :</label>    
+                <input type="number" id="IS_HS2" placeholder="Enter IS_HS2 value">
+
+                <label for="IH2">IH2:</label>
+                <input type="number" id="IH2" placeholder="Enter IH2 value">
+
+                <label for="IH5">IH5:</label>
+                <input type="number" id="IH5" placeholder="Enter IH5 value">
+            </section>
+
+            <section class="form-section" aria-labelledby="ct-section">
+                <h2 id="ct-section">CT Ratios</h2>
+                <label for="HVCT_PRIMARY">HVCT_PRIMARY:</label>
+                <input type="number" id="HVCT_PRIMARY" step="any" placeholder="Enter HVCT_PRIMARY value">
+
+                <label for="HVCT_SECONDARY">HVCT_SECONDARY:</label>
+                <input type="number" id="HVCT_SECONDARY" step="any" placeholder="Enter HVCT_SECONDARY value">
+
+                <label for="LVCT_PRIMARY">LVCT_PRIMARY:</label>
+                <input type="number" id="LVCT_PRIMARY" step="any" placeholder="Enter LVCT_PRIMARY value">
+
+                <label for="LVCT_SECONDARY">LVCT_SECONDARY:</label>
+                <input type="number" id="LVCT_SECONDARY" step="any" placeholder="Enter LVCT_SECONDARY value">
+
+                <label for="NO_OF_LVS">NO_OF_LVS:</label>
+                <input type="number" id="NO_OF_LVS" step="any" placeholder="Enter NO_OF_LVS value">
+            </section>
+                
+            <section class="form-section" aria-labelledby="matching-section">
+                <h2>MATCHING FACTORS</h2>
+                <h2 id="matching-section">Matching Factors</h2>
+                <div class="output-group">
+                    <label for="HV_MatchingFactor">HV Matching Factor:</label>
+                    <output id="HV_MatchingFactor"></output>
+                </div>
+                <div class="output-group">
+                    <label for="LV_MatchingFactor">LV Matching Factor:</label>
+                    <output id="LV_MatchingFactor"></output>
+                </div>
+            </section>
+
+            <section class="form-section" aria-labelledby="stables-section">
+                <h2 id="stables-section">Calculated Values</h2>
+
+                <div class="subsection">
+                    <h3>HV Currents</h3>
+                    <div class="output-group">
+                        <label for="HV_FL_CUR_RPH">HV Full Load Current (R Phase):</label>
+                        <output id="HV_FL_CUR_RPH"></output>
+                    </div>
+                    <div class="output-group">
+                        <label for="HV_FL_CUR_YPH">HV Full Load Current (Y Phase):</label>
+                        <output id="HV_FL_CUR_YPH"></output>
+                    </div>
+                    <div class="output-group">
+                        <label for="HV_FL_CUR_BPH">HV Full Load Current (B Phase):</label>
+                        <output id="HV_FL_CUR_BPH"></output>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>LV Currents</h3>
+                    <div class="output-group">
+                        <label for="LV_FL_CUR_RPH">LV Full Load Current (R Phase):</label>
+                        <output id="LV_FL_CUR_RPH"></output>
+                    </div>
+                    <div class="output-group">
+                        <label for="LV_FL_CUR_YPH">LV Full Load Current (Y Phase):</label>
+                        <output id="LV_FL_CUR_YPH"></output>
+                    </div>
+                    <div class="output-group">
+                        <label for="LV_FL_CUR_BPH">LV Full Load Current (B Phase):</label>
+                        <output id="LV_FL_CUR_BPH"></output>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Single Phase PickUp</h3>
+                    <div class="output-group">
+                        <label for="HV_IP_Pickup">HV Single Phase Pickup:</label>
+                        <output id="HV_IP_Pickup"></output>
+                    </div>
+                    <div class="output-group">
+                        <label for="LV_IP_Pickup">LV Single Phase Pickup:</label>
+                        <output id="LV_IP_Pickup"></output>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Three Phase PickUp</h3>
+                    <div class="output-group">
+                        <label for="HV_3P_Pickup">HV Three Phase Pickup:</label>
+                        <output id="HV_3P_Pickup"></output>
+                    </div>
+                    <div class="output-group">
+                        <label for="LV_3P_Pickup">LV Three Phase Pickup:</label>
+                        <output id="LV_3P_Pickup"></output>
+                    </div>
+                </div>
+            </section>
+
+            <section class="form-section" aria-labelledby="max-values-section">
+                <h2 id="max-values-section">Maximum Values</h2>
+                <div class="subsection">
+                    <h3>HV Maximum Currents</h3>
+                    <div class="output-group">
+                        <label for="HV_pickup_MAX_CUR_RPH">HV Maximum Current (R Phase):</label>
+                        <output id="HV_pickup_MAX_CUR_RPH"></output>
+                    </div>
+                    <div class="output-group">
+                        <label for="HV_pickup_MAX_CUR_YPH">HV Maximum Current (Y Phase):</label>
+                        <output id="HV_pickup_MAX_CUR_YPH"></output>
+                    </div>
+                    <div class="output-group">
+                        <label for="HV_pickup_MAX_CUR_BPH">HV Maximum Current (B Phase):</label>
+                        <output id="HV_pickup_MAX_CUR_BPH"></output>
+                    </div>
+                </div>
+                <div class="subsection">
+                    <h3>LV Maximum Currents</h3>
+                    <div class="output-group">
+                        <label for="LV_pickup_MAX_CUR_RPH">LV Maximum Current (R Phase):</label>
+                        <output id="LV_pickup_MAX_CUR_RPH"></output>
+                    </div>
+                    <div class="output-group">
+                        <label for="LV_pickup_MAX_CUR_YPH">LV Maximum Current (Y Phase):</label>
+                        <output id="LV_pickup_MAX_CUR_YPH"></output>
+                    </div>
+                    <div class="output-group">
+                        <label for="LV_pickup_MAX_CUR_BPH">LV Maximum Current (B Phase):</label>
+                        <output id="LV_pickup_MAX_CUR_BPH"></output>
+                    </div>
+                </div>
+            </section>
+
+            <section class="form-section" aria-labelledby="slope-30-section">
+                <h2 id="slope-30-section">30% Slope</h2>
+                <div class="subsection">
+                    <h3>HV Secondary Currents</h3>
+                    <div class="output-group">
+                        <label for="HV_SEC_CUR_RPh">HV Secondary Current (R Phase):</label>
+                        <output id="HV_SEC_CUR_RPh"></output>
+                    </div>
+                    <div class="output-group">
+                        <label for="HV_SEC_CUR_YPH">HV Secondary Current (Y Phase):</label>
+                        <output id="HV_SEC_CUR_YPH"></output>
+                    </div>
+                    <div class="output-group">
+                        <label for="HV_SEC_CUR_BPH">HV Secondary Current (B Phase):</label>
+                        <output id="HV_SEC_CUR_BPH"></output>
+                    </div>
+                </div>
+                <div class="subsection">
+                    <h3>LV Secondary Currents</h3>
+                    <div class="output-group">
+                        <label for="LV_SEC_CUR_RPh">LV Secondary Current (R Phase):</label>
+                        <output id="LV_SEC_CUR_RPh"></output>
+                    </div>
+                    <div class="output-group">
+                        <label for="LV_SEC_CUR_YPH">LV Secondary Current (Y Phase):</label>
+                        <output id="LV_SEC_CUR_YPH"></output>
+                    </div>
+                    <div class="output-group">
+                        <label for="LV_SEC_CUR_BPH">LV Secondary Current (B Phase):</label>
+                        <output id="LV_SEC_CUR_BPH"></output>
+                    </div>
+                </div>
+            </section>
+
+            <section class="form-section" aria-labelledby="slope-80-section">
+                <h2 id="slope-80-section">80% Slope (Maximum Currents)</h2>
+                <div class="subsection">
+                    <h3>HV Currents - Set 1</h3>
+                    <div class="output-group">
+                        <label for="HV_80SLOPE_SEC_CUR_RPH">HV 80% Slope Current (R Phase):</label>
+                        <output id="HV_80SLOPE_SEC_CUR_RPH"></output>
+                    </div>
+                    <div class="output-group">
+                        <label for="HV_80SLOPE_SEC_CUR_YPH">HV 80% Slope Current (Y Phase):</label>
+                        <output id="HV_80SLOPE_SEC_CUR_YPH"></output>
+                    </div>
+                    <div class="output-group">
+                        <label for="HV_80SLOPE_SEC_CUR_BPH">HV 80% Slope Current (B Phase):</label>
+                        <output id="HV_80SLOPE_SEC_CUR_BPH"></output>
+                    </div>
+                </div>
+                <div class="subsection">
+                    <h3>LV Currents - Set 1</h3>
+                    <div class="output-group">
+                        <label for="LV_80SLOPE_SEC_CUR_RPH">LV 80% Slope Current (R Phase):</label>
+                        <output id="LV_80SLOPE_SEC_CUR_RPH"></output>
+                    </div>
+                    <div class="output-group">
+                        <label for="LV_80SLOPE_SEC_CUR_YPH">LV 80% Slope Current (Y Phase):</label>
+                        <output id="LV_80SLOPE_SEC_CUR_YPH"></output>
+                    </div>
+                    <div class="output-group">
+                        <label for="LV_80SLOPE_SEC_CUR_BPH">LV 80% Slope Current (B Phase):</label>
+                        <output id="LV_80SLOPE_SEC_CUR_BPH"></output>
+                    </div>
+                </div>
+                <div class="subsection">
+                    <h3>80% Slope - Set 2</h3>
+                    <div class="output-group">
+                        <label for="HV_80SLOPE_SEC_CUR_RPH_2">HV 80% Slope Current (R Phase) - Set 2:</label>
+                        <output id="HV_80SLOPE_SEC_CUR_RPH_2"></output>
+                    </div>
+                    <div class="output-group">
+                        <label for="HV_80SLOPE_SEC_CUR_YPH_2">HV 80% Slope Current (Y Phase) - Set 2:</label>
+                        <output id="HV_80SLOPE_SEC_CUR_YPH_2"></output>
+                    </div>
+                    <div class="output-group">
+                        <label for="HV_80SLOPE_SEC_CUR_BPH_2">HV 80% Slope Current (B Phase) - Set 2:</label>
+                        <output id="HV_80SLOPE_SEC_CUR_BPH_2"></output>
+                    </div>
+                    <div class="output-group">
+                        <label for="LV_80SLOPE_SEC_CUR_RPH_2">LV 80% Slope Current (R Phase) - Set 2:</label>
+                        <output id="LV_80SLOPE_SEC_CUR_RPH_2"></output>
+                    </div>
+                    <div class="output-group">
+                        <label for="LV_80SLOPE_SEC_CUR_YPH_2">LV 80% Slope Current (Y Phase) - Set 2:</label>
+                        <output id="LV_80SLOPE_SEC_CUR_YPH_2"></output>
+                    </div>
+                    <div class="output-group">
+                        <label for="LV_80SLOPE_SEC_CUR_BPH_2">LV 80% Slope Current (B Phase) - Set 2:</label>
+                        <output id="LV_80SLOPE_SEC_CUR_BPH_2"></output>
+                    </div>
+                </div>
+            </section>
+
+            <section class="form-section" aria-labelledby="harmonics-section">
+                <h2 id="harmonics-section">Harmonics (3 Phases)</h2>
+                <div class="subsection">
+                    <h3>2nd Harmonics</h3>
+                    <div class="output-group">
+                        <label for="HV_Current">HV Current:</label>
+                        <output id="HV_Current"></output>
+                    </div>
+                </div>
+                <div class="subsection">
+                    <h3>5th Harmonics</h3>
+                    <div class="output-group">
+                        <label for="HV_Current_5th">HV Current:</label>
+                        <output id="HV_Current_5th"></output>
+                    </div>
+                </div>
+            </section>
+
+            <div class="form-buttons">
+                <button type="reset" class="btn btn-secondary">Clear Form</button>
+            </div>
+        </form>
+    </main>
+
+    <script type="module" src="script2.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,103 @@
+html (lang="en")
+├── head
+│   ├── meta (charset)
+│   ├── meta (viewport)
+│   ├── meta (description)
+│   ├── link (stylesheet)
+│   └── title
+│
+└── body
+    └── main (class="container")
+        ├── h1: Relay Calculations Dashboard
+        │
+        └── form (id="relayCalculationForm")
+            ├── section (Transformer Ratings)
+            │   ├── h2
+            │   ├── label + select (Vector Group)
+            │   ├── label + input (VHV)
+            │   ├── label + input (VLV)
+            │   ├── label + select (Range)
+            │   └── label + input (Tarfo Rating)
+            │
+            ├── section (Differential Values)
+            │   ├── h2
+            │   ├── label + input (IS1)
+            │   ├── label + input (IS2)
+            │   ├── label + input (K1)
+            │   ├── label + input (K2)
+            │   ├── label + input (IS_HS1)
+            │   ├── label + input (IS_HS2)
+            │   ├── label + input (IH2)
+            │   └── label + input (IH5)
+            │
+            ├── section (CT Ratios)
+            │   ├── h2
+            │   ├── label + input (HVCT_PRIMARY)
+            │   ├── label + input (HVCT_SECONDARY)
+            │   ├── label + input (LVCT_PRIMARY)
+            │   ├── label + input (LVCT_SECONDARY)
+            │   └── label + input (NO_OF_LVS)
+            │
+            ├── section (Matching Factors) [OUTPUT]
+            │   ├── h2
+            │   ├── .output-group
+            │   │   ├── label + output (HV_MatchingFactor)
+            │   └── .output-group
+            │       ├── label + output (LV_MatchingFactor)
+            │
+            ├── section (Calculated Values) [OUTPUT]
+            │   ├── h2
+            │   ├── .subsection (HV Currents)
+            │   │   ├── h3
+            │   │   ├── .output-group × 3 (RPH, YPH, BPH)
+            │   ├── .subsection (LV Currents)
+            │   │   ├── h3
+            │   │   ├── .output-group × 3 (RPH, YPH, BPH)
+            │   ├── .subsection (Single Phase PickUp)
+            │   │   ├── h3
+            │   │   ├── .output-group × 2 (HV, LV)
+            │   └── .subsection (Three Phase PickUp)
+            │       ├── h3
+            │       ├── .output-group × 2 (HV, LV)
+            │
+            ├── section (Maximum Values) [OUTPUT]
+            │   ├── h2
+            │   ├── .subsection (HV Maximum Currents)
+            │   │   ├── h3
+            │   │   ├── .output-group × 3 (RPH, YPH, BPH)
+            │   └── .subsection (LV Maximum Currents)
+            │       ├── h3
+            │       ├── .output-group × 3 (RPH, YPH, BPH)
+            │
+            ├── section (30% Slope) [OUTPUT]
+            │   ├── h2
+            │   ├── .subsection (HV Secondary Currents)
+            │   │   ├── h3
+            │   │   ├── .output-group × 3 (RPh, YPH, BPH)
+            │   └── .subsection (LV Secondary Currents)
+            │       ├── h3
+            │       ├── .output-group × 3 (RPh, YPH, BPH)
+            │
+            ├── section (80% Slope - Maximum Currents) [OUTPUT]
+            │   ├── h2
+            │   ├── .subsection (HV Currents - Set 1)
+            │   │   ├── h3
+            │   │   ├── .output-group × 3
+            │   ├── .subsection (LV Currents - Set 1)
+            │   │   ├── h3
+            │   │   ├── .output-group × 3
+            │   └── .subsection (80% Slope - Set 2)
+            │       ├── h3
+            │       ├── .output-group × 6 (HV & LV, all 3 phases)
+            │
+            ├── section (Harmonics - 3 Phases) [OUTPUT]
+            │   ├── h2
+            │   ├── .subsection (2nd Harmonics)
+            │   │   ├── h3
+            │   │   └── .output-group
+            │   └── .subsection (5th Harmonics)
+            │       ├── h3
+            │       └── .output-group
+            │
+            └── .form-buttons
+                └── button (type="reset" class="btn btn-secondary")
